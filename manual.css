@@ -1,31 +1,42 @@
+/* manual.css */
 body {
-    font-family: 'Arial', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    font-family: Arial, sans-serif;
     margin: 0;
+    padding: 0;
 }
 
 .manual-register {
-    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
     padding: 20px;
-    box-shadow: 1px 1px 17px 4px grey;
-    border-radius: 8px;
-    background-color:rgb(80, 107, 228);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
 }
 
 button {
-    padding: 10px;
-    margin-top: 10px;
+    background-color: #4563e9;
+    color: white;
+    padding: 8px 16px;
+    border: none;
     cursor: pointer;
 }
 
-#registerLogs {
-    margin-top: 20px;
-}
-
-/* #logsList {
-    list-style-type: none;
-    padding: 0;
-} */

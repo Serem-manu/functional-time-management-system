@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function checkIn() {
-        // Send an AJAX request to the server to record the check-in time
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'functions.php', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -42,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function checkOut() {
-        // Send an AJAX request to the server to record the check-out time
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'functions.php', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

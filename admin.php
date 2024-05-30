@@ -12,8 +12,8 @@
         <header>ADMIN DASHBOARD</header>
     <div class="sidebar">
      <ul>
-        <li><a href="manual.html">Manual Register</a></li>
-        <li><a href="logs.html" >Check Logs</a></li>
+        <li><a href="manual.php">Manual Register</a></li>
+        <li><a href="logs.php" >Check Logs</a></li>
     </ul>
     </div>
 </body>

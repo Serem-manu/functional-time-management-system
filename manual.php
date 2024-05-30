@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,84 +5,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="manual.css">
     <title>Manual Register</title>
+    <style>
+        
+  </style>
 </head>
 <body>
-
-<div class="manual-register">
-    <h2>Employee Manual Register (Admin)</h2>
-
-    <label for="employeeName">Employee Name:</label>
-    <input type="text" id="employeeName" placeholder="Enter Employee Name">
-
-    <button onclick="checkIn()">Check-In</button>
-    <button onclick="checkOut()">Check-Out</button>
-
-    <div id="registerLogs">
-        <!-- <h3>Register Logs</h3> -->
-        <ul id="logsList"></ul>
+    <div class="manual-register">
+        <h2>Employee Manual Register (Admin)</h2>
+        <table id="employeeTable">
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Check-In</th>
+                    <th>Check-Out</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
-</div>
+    <script>
+        window.onload = fetchEmployees;
+        const employeeStatus = {};
 
-<script>
-function checkIn() {
-    const employeeName = document.getElementById("employeeName").value.trim();
-    if (employeeName) {
-        const checkInTime = new Date().toLocaleString();
-        storeCheckInTime(employeeName, checkInTime);
-    } else {
-        alert("Please enter employee name");
-    }
-}
+        function fetchEmployees() {
+            fetch('database.php?action=getEmployees')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        const employeeTable = document.getElementById("employeeTable").getElementsByTagName('tbody')[0];
+                        data.employees.forEach(employee => {
+                            const row = employeeTable.insertRow();
+                            const nameCell = row.insertCell(0);
+                            const checkInCell = row.insertCell(1);
+                            const checkOutCell = row.insertCell(2);
 
-function checkOut() {
-    const employeeName = document.getElementById("employeeName").value.trim();
-    if (employeeName) {
-        const checkOutTime = new Date().toLocaleString();
-        storeCheckOutTime(employeeName, checkOutTime);
-    } else {
-        alert("Please enter employee name");
-    }
-}
+                            nameCell.textContent = employee.name;
+                            const checkInButton = document.createElement("button");
+                            checkInButton.textContent = "Check-In";
+                            checkInButton.onclick = () => checkIn(employee.name, checkInButton, checkOutCell.firstChild);
+                            checkInCell.appendChild(checkInButton);
 
-function storeCheckInTime(employeeName, checkInTime) {
-    fetch('database.php', {
-        method: 'POST',
-        body: 'action=storeCheckInTime&employeeName=' + encodeURIComponent(employeeName) + '&checkInTime=' + checkInTime
-    })
-    .then(response => response.text())
-    .then(data => {
-        if (data === "success") {
-            addLogEntry(`${employeeName} checked in at ${checkInTime}`);
-        } else {
-            alert("Checked in sucessfully");
+                            const checkOutButton = document.createElement("button");
+                            checkOutButton.textContent = "Check-Out";
+                            checkOutButton.disabled = true;
+                            checkOutButton.onclick = () => checkOut(employee.name, checkOutButton, checkInCell.firstChild);
+                            checkOutCell.appendChild(checkOutButton);
+
+                            employeeStatus[employee.name] = {
+                                checkedIn: false,
+                                checkInButton: checkInButton,
+                                checkOutButton: checkOutButton
+                            };
+                        });
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => console.error(error));
         }
-    })
-    .catch(error => console.error(error));
-}
 
-function storeCheckOutTime(employeeName, checkOutTime) {
-    fetch('config.php', {
-        method: 'POST',
-        body: 'action=storeCheckOutTime&employeeName=' + encodeURIComponent(employeeName) + '&checkOutTime=' + checkOutTime
-    })
-    .then(response => response.text())
-    .then(data => {
-        if (data === "success") {
-            addLogEntry(`${employeeName} checked out at ${checkOutTime}`);
-        } else {
-            alert("Checked out sucessfully");
+        function checkIn(employeeName, checkInButton, checkOutButton) {
+            if (!employeeStatus[employeeName].checkedIn) {
+                const checkInTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                storeCheckInTime(employeeName, checkInTime);
+                employeeStatus[employeeName].checkedIn = true;
+                checkInButton.disabled = true;
+                checkOutButton.disabled = false;
+            }
         }
-    })
-    .catch(error => console.error(error));
-}
 
-function addLogEntry(log) {
-    const logsList = document.getElementById("logsList");
-    const li = document.createElement("li");
-    li.textContent = log;
-    logsList.appendChild(li);
-}
-</script>
+        function checkOut(employeeName, checkOutButton, checkInButton) {
+            if (employeeStatus[employeeName].checkedIn) {
+                const checkOutTime = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                storeCheckOutTime(employeeName, checkOutTime);
+                employeeStatus[employeeName].checkedIn = false;
+                checkOutButton.disabled = true;
+                checkInButton.disabled = false;
+            }
+        }
+
+        function storeCheckInTime(employeeName, checkInTime) {
+            const formData = new FormData();
+            formData.append('action', 'storeCheckInTime');
+            formData.append('employeeName', employeeName);
+            formData.append('checkInTime', checkInTime);
+
+            fetch('database.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    alert(data.message);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error(error));
+        }
+
+        function storeCheckOutTime(employeeName, checkOutTime) {
+            const formData = new FormData();
+            formData.append('action', 'storeCheckOutTime');
+            formData.append('employeeName', employeeName);
+            formData.append('checkOutTime', checkOutTime);
+
+            fetch('database.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    alert(data.message);
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error(error));
+        }
+    </script>
 </body>
 </html>
-

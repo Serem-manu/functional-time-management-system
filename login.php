@@ -1,26 +1,19 @@
 <?php
 session_start();
-
-// Database configuration
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_NAME', 'Employee data');
 
-// Connect to the database
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-
-// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST["name"];
     $password = $_POST["password"];
 
-    // Query the database to check if the user exists
     $sql = "SELECT * FROM users WHERE name = '$name'";
     $result = $conn->query($sql);
 
@@ -42,7 +35,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -50,16 +42,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="login.css">
 </head>
 <body>
-<div class="login-container" >
-    <h2>Employee Login</h2>
-    <?php if (isset($error)) { echo "<p style='color:red;'>$error</p>"; } ?>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        <input type="submit" value="Login"><br><br>
-    </form>
-</div>
+    <div class="login-container">
+        <h2>Employee Login</h2>
+        <?php if (isset($error)) { echo "<p style='color:red;'>$error</p>"; } ?>
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br>
+            <input type="checkbox" id="togglePassword" onclick="togglePasswordVisibility()"> Show Password<br><br>
+            <input type="submit" value="Login"><br><br>
+            <a href="adminlog.php">Admin Login</a><br><br>
+            <a href="signup.php">Don't have an account<br>Signup</a>
+        </form>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById("password");
+            var toggleBtn = document.getElementById("togglePassword");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleBtn.textContent = "Hide Password";
+            } else {
+                passwordInput.type = "password";
+                toggleBtn.textContent = "Show Password";
+           }
+        }
+    </script>
 </body>
 </html>

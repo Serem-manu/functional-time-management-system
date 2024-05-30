@@ -7,7 +7,6 @@ body {
         height: 100vh;
         margin: 0;
     }
-    
     .login-container{
         text-align: center;
         padding: 20px; 
@@ -15,12 +14,11 @@ body {
         border-radius: 8px;
         display: flex;
       flex-direction:column;
-      background-color:rgb(17, 67, 233); 
+      background-color:rgb(80, 116, 233); 
       border:1px solid black;
     }
-    
-     .button {
-      background-color:rgb(17, 67, 233); 
+    .button {
+      /* background-color:rgb(17, 67, 233);  */
       color: rgb(255, 255, 255);
       padding: 10px;
       text-align: center;
@@ -30,5 +28,6 @@ body {
       cursor: pointer;
       border-radius: 5px;
       border: none;
+      
     }
      
